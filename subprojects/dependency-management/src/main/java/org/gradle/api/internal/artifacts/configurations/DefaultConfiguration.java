@@ -1298,10 +1298,6 @@ public class DefaultConfiguration extends AbstractFileCollection implements Conf
             }
         }
 
-        public Spec<? super Dependency> getDependencySpec() {
-            return dependencySpec;
-        }
-
         @Override
         public String getDisplayName() {
             return DefaultConfiguration.this.getDisplayName();
@@ -1775,11 +1771,9 @@ public class DefaultConfiguration extends AbstractFileCollection implements Conf
                 return "lenient resolution result for " + delegate;
             }
         }
-
     }
 
     public static class ArtifactViewConfiguration implements ArtifactView.ViewConfiguration {
-
         private final ImmutableAttributesFactory attributesFactory;
         private final AttributeContainerInternal configurationAttributes;
         private AttributeContainerInternal viewAttributes;
