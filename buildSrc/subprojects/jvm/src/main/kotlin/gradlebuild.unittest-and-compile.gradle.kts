@@ -200,11 +200,8 @@ fun configureTests() {
     }
 
     tasks.withType<Test>().configureEach {
-<<<<<<< HEAD:buildSrc/subprojects/jvm/src/main/kotlin/gradlebuild.unittest-and-compile.gradle.kts
         filterEnvironmentVariables()
-=======
         outputs.cacheIf { false }
->>>>>>> Distributed test:buildSrc/subprojects/jvm/src/main/kotlin/gradlebuild/unittest-and-compile.gradle.kts
 
         maxParallelForks = project.maxParallelForks
 
