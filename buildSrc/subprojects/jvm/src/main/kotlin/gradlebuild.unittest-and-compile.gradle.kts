@@ -220,6 +220,8 @@ fun configureTests() {
             }
         }
 
+        useJUnitPlatform()
+
         if (project.testDistributionEnabled()) {
             distribution {
                 maxLocalExecutors.set(0)
