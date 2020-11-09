@@ -23,7 +23,7 @@ class FunctionalTest(
     this.name = name
     this.description = description
     id = AbsoluteId(uuid)
-    val testTaskName = "${testCoverage.testType.name}Test -x platform-play:quickTest -x distributions-full:quickTest"
+    val testTaskName = "${testCoverage.testType.name}Test -x platform-play:quickTest -x distributions-integ-tests:quickTest"
     val quickTest = testCoverage.testType == TestType.quick
     val buildScanTags = listOf("FunctionalTest")
     val buildScanValues = mapOf(
