@@ -31,7 +31,8 @@ val cachesCleanerService = gradle.sharedServices.registerIfAbsent("cachesCleaner
 }
 
 tasks.withType<DistributionTest>().configureEach {
-    shouldRunAfter("test")
+    dependsOn(":cleanUpCaches")
+    finalizedBy(":cleanUpDaemons")
 
     setJvmArgsOfTestJvm()
     setSystemPropertiesOfTestJVM()
