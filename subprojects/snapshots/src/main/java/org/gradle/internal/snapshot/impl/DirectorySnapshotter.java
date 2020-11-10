@@ -55,6 +55,8 @@ import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Predicate;
 
+import static org.gradle.internal.snapshot.MerkleDirectorySnapshotBuilder.EmptyDirectoryHandlingStrategy.INCLUDE_EMPTY_DIRS;
+
 public class DirectorySnapshotter {
     private static final Logger LOGGER = LoggerFactory.getLogger(DirectorySnapshotter.class);
     private static final EnumSet<FileVisitOption> DONT_FOLLOW_SYMLINKS = EnumSet.noneOf(FileVisitOption.class);
@@ -332,7 +334,7 @@ public class DirectorySnapshotter {
             AccessType accessType = AccessType.viaSymlink(
                 !symbolicLinkMappings.isEmpty() && symbolicLinkMappings.getFirst().target.equals(dir.toString())
             );
-            builder.leaveDirectory(true, accessType, internedRemappedAbsolutePath, internedDirName);
+            builder.leaveDirectory(INCLUDE_EMPTY_DIRS, accessType, internedRemappedAbsolutePath, internedDirName);
             parentDirectories.removeFirst();
             return FileVisitResult.CONTINUE;
         }

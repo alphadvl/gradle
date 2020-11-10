@@ -32,7 +32,6 @@ import org.gradle.caching.internal.origin.OriginReader;
 import org.gradle.caching.internal.origin.OriginWriter;
 import org.gradle.caching.internal.packaging.BuildCacheEntryPacker;
 import org.gradle.internal.RelativePathSupplier;
-import org.gradle.internal.file.FileMetadata.AccessType;
 import org.gradle.internal.file.FileType;
 import org.gradle.internal.file.TreeType;
 import org.gradle.internal.file.impl.DefaultFileMetadata;
@@ -68,6 +67,9 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import static org.gradle.internal.file.FileMetadata.AccessType.DIRECT;
+import static org.gradle.internal.snapshot.MerkleDirectorySnapshotBuilder.EmptyDirectoryHandlingStrategy.INCLUDE_EMPTY_DIRS;
 
 /**
  * Packages build cache entries to a POSIX TAR file.
@@ -265,7 +267,7 @@ public class TarBuildCacheEntryPacker implements BuildCacheEntryPacker {
             chmodUnpackedFile(entry, file);
             String internedAbsolutePath = stringInterner.intern(file.getAbsolutePath());
             String internedFileName = stringInterner.intern(fileName);
-            return new RegularFileSnapshot(internedAbsolutePath, internedFileName, hash, DefaultFileMetadata.file(output.getCount(), file.lastModified(), AccessType.DIRECT));
+            return new RegularFileSnapshot(internedAbsolutePath, internedFileName, hash, DefaultFileMetadata.file(output.getCount(), file.lastModified(), DIRECT));
         }
     }
 
@@ -280,7 +282,7 @@ public class TarBuildCacheEntryPacker implements BuildCacheEntryPacker {
 
         while ((entry = input.getNextTarEntry()) != null) {
             boolean isDir = entry.isDirectory();
-            boolean outsideOfRoot = parser.nextPath(entry.getName(), isDir, (path, name) -> builder.leaveDirectory(true, AccessType.DIRECT, stringInterner.intern(path), stringInterner.intern(name)));
+            boolean outsideOfRoot = parser.nextPath(entry.getName(), isDir, (path, name) -> builder.leaveDirectory(INCLUDE_EMPTY_DIRS, DIRECT, stringInterner.intern(path), stringInterner.intern(name)));
             if (outsideOfRoot) {
                 break;
             }
@@ -297,8 +299,8 @@ public class TarBuildCacheEntryPacker implements BuildCacheEntryPacker {
             }
         }
 
-        parser.exitToRoot((path, name) -> builder.leaveDirectory(true, AccessType.DIRECT, stringInterner.intern(path), stringInterner.intern(name)));
-        builder.leaveDirectory(true, AccessType.DIRECT, stringInterner.intern(treeRoot.getAbsolutePath()), stringInterner.intern(treeRoot.getName()));
+        parser.exitToRoot((path, name) -> builder.leaveDirectory(INCLUDE_EMPTY_DIRS, DIRECT, stringInterner.intern(path), stringInterner.intern(name)));
+        builder.leaveDirectory(INCLUDE_EMPTY_DIRS, DIRECT, stringInterner.intern(treeRoot.getAbsolutePath()), stringInterner.intern(treeRoot.getName()));
 
         snapshots.put(treeName, builder.getResult());
         return entry;
