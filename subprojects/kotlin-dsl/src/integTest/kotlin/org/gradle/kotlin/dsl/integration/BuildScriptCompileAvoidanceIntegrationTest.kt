@@ -2,12 +2,14 @@ package org.gradle.kotlin.dsl.integration
 
 import org.gradle.integtests.fixtures.BuildOperationsFixture
 import org.gradle.integtests.fixtures.ToBeFixedForConfigurationCache
+import org.gradle.integtests.fixtures.executer.GradleContextualExecuter
 import org.gradle.kotlin.dsl.fixtures.AbstractKotlinIntegrationTest
 import org.gradle.kotlin.dsl.provider.BUILDSCRIPT_COMPILE_AVOIDANCE_ENABLED
 import org.gradle.kotlin.dsl.provider.SCRIPT_CACHE_BASE_DIR_OVERRIDE_PROPERTY
 import org.hamcrest.CoreMatchers.containsString
 import org.hamcrest.MatcherAssert.assertThat
 import org.junit.Assert.assertTrue
+import org.junit.Assume.assumeFalse
 import org.junit.Assume.assumeTrue
 import org.junit.Before
 import org.junit.Ignore
@@ -146,6 +148,7 @@ class BuildScriptCompileAvoidanceIntegrationTest : AbstractKotlinIntegrationTest
     @ToBeFixedForConfigurationCache
     @Test
     fun `avoids buildscript recompilation on non ABI change in precompiled script plugin`() {
+        assumeFalse(GradleContextualExecuter.isEmbedded())
         val pluginId = "my-plugin"
         withPrecompiledScriptPluginInBuildSrc(
             pluginId,
@@ -174,6 +177,7 @@ class BuildScriptCompileAvoidanceIntegrationTest : AbstractKotlinIntegrationTest
     @ToBeFixedForConfigurationCache
     @Test
     fun `recompiles buildscript when new task is registered in precompiled script plugin`() {
+        assumeFalse(GradleContextualExecuter.isEmbedded())
         val pluginId = "my-plugin"
         withPrecompiledScriptPluginInBuildSrc(
             pluginId,
@@ -203,6 +207,7 @@ class BuildScriptCompileAvoidanceIntegrationTest : AbstractKotlinIntegrationTest
     @ToBeFixedForConfigurationCache
     @Test
     fun `avoids buildscript recompilation when task is configured in precompiled script plugin`() {
+        assumeFalse(GradleContextualExecuter.isEmbedded())
         val pluginId = "my-plugin"
         withPrecompiledScriptPluginInBuildSrc(
             pluginId,
@@ -232,6 +237,7 @@ class BuildScriptCompileAvoidanceIntegrationTest : AbstractKotlinIntegrationTest
     @ToBeFixedForConfigurationCache
     @Test
     fun `recompiles buildscript when plugins applied from a precompiled plugin change`() {
+        assumeFalse(GradleContextualExecuter.isEmbedded())
         val pluginId = "my-plugin"
         withPrecompiledScriptPluginInBuildSrc(
             pluginId,
@@ -411,6 +417,7 @@ class BuildScriptCompileAvoidanceIntegrationTest : AbstractKotlinIntegrationTest
     @ToBeFixedForConfigurationCache
     @Test
     fun `recompiles buildscript when plugin extension registration name changes from a precompiled plugin`() {
+        assumeFalse(GradleContextualExecuter.isEmbedded())
         val pluginId = "my-plugin"
         val extensionClass = """
             open class TestExtension {
