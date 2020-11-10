@@ -19,15 +19,38 @@ package org.gradle.caching.internal.packaging.impl
 import spock.lang.Specification
 
 class RelativePathParserTest extends Specification {
+    def parentHandler = Mock(RelativePathParser.DirectoryExitHandler)
 
-    def "can parse sequence of relative paths"() {
-        def parentHandler = Mock(RelativePathParser.DirectoryExitHandler)
-        boolean outsideOfRoot
+    def "can work when empty"() {
+        def parser = new RelativePathParser("tree-some/")
+
+        expect:
+        parser.root
 
         when:
-        def parser = new RelativePathParser("tree-some/")
+        parser.exitToRoot(parentHandler)
         then:
-        parser.root
+        0 * _
+    }
+
+    def "can exit when moved to different root"() {
+        def parser = new RelativePathParser("tree-some/")
+
+        when:
+        boolean outsideOfRoot = parser.nextPath("tree-other/", true, parentHandler)
+        then:
+        0 * _
+        outsideOfRoot
+
+        when:
+        parser.exitToRoot(parentHandler)
+        then:
+        0 * _
+    }
+
+    def "can parse sequence of relative paths"() {
+        def parser = new RelativePathParser("tree-some/")
+        boolean outsideOfRoot
 
         when:
         outsideOfRoot = parser.nextPath("tree-some/first/", true, parentHandler)
@@ -119,7 +142,6 @@ class RelativePathParserTest extends Specification {
 
     def "can parse with dots"() {
         def parser = new RelativePathParser("tree-reports.html.destination/")
-        def parentHandler = Mock(RelativePathParser.DirectoryExitHandler)
         boolean outsideOfRoot
 
         when:

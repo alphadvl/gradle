@@ -64,7 +64,10 @@ public class RelativePathParser {
     }
 
     private boolean exitDirectory(DirectoryExitHandler exitDirectoryHandler) {
-        String absolutePath = directoryPaths.removeLast();
+        String absolutePath = directoryPaths.pollLast();
+        if (absolutePath == null) {
+            return true;
+        }
         String name = directoryNames.pollLast();
         if (name == null) {
             return true;
